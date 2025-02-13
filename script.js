@@ -1,47 +1,59 @@
-// Smooth Scroll for Navigation Links
-document.querySelectorAll('nav ul li a').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href').slice(1);
-        const targetElement = document.getElementById(targetId);
 
-        if (targetElement) {
-            targetElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+// Initialize AOS
+AOS.init({
+    duration: 1000,
+    once: true
+});
+
+// Smooth scroll for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        target.scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
+
+// Form validation and submission
+const contactForm = document.querySelector('#contactForm');
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (this.checkValidity()) {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // Here you would typically send the data to a server
+            // For now, we'll just show an alert
+            alert('Thank you for your message! I will get back to you soon.');
+            this.reset();
+        }
+        this.classList.add('was-validated');
+    });
+}
+
+// Skills animation
+const skillBars = document.querySelectorAll('.skill-progress .progress-bar');
+const animateSkills = () => {
+    skillBars.forEach(bar => {
+        const value = bar.getAttribute('aria-valuenow');
+        bar.style.width = value + '%';
+    });
+};
+
+// Trigger skill animation when section is in view
+const skillsSection = document.querySelector('#skills');
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            animateSkills();
         }
     });
 });
 
-// Back to Top Button
-const backToTopButton = document.createElement('button');
-backToTopButton.textContent = '↑';
-backToTopButton.className = 'back-to-top';
-document.body.appendChild(backToTopButton);
-
-backToTopButton.style.position = 'fixed';
-backToTopButton.style.bottom = '20px';
-backToTopButton.style.right = '20px';
-backToTopButton.style.display = 'none';
-backToTopButton.style.padding = '10px';
-backToTopButton.style.border = 'none';
-backToTopButton.style.borderRadius = '50%';
-backToTopButton.style.backgroundColor = '#333';
-backToTopButton.style.color = '#fff';
-backToTopButton.style.cursor = 'pointer';
-
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 300) {
-        backToTopButton.style.display = 'block';
-    } else {
-        backToTopButton.style.display = 'none';
-    }
-});
-
-backToTopButton.addEventListener('click', () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-});
+if (skillsSection) {
+    observer.observe(skillsSection);
+}
